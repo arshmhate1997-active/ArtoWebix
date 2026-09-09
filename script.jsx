@@ -1,13 +1,12 @@
 const { useState, useEffect, useRef } = React;
 
 /* =========================================================
-   ICON COMPONENT
+   ICON COMPONENT WITH NATIVE BRAND SVG FALLBACKS
    ========================================================= */
 
-function Icon({ name, size = 20, strokeWidth = 2, className = "" }) {
+function Icon({ name, size = 18, className = "" }) {
   const iconRef = useRef(null);
 
-  // Social SVGs fallback for icons removed from Lucide
   if (name === "instagram") {
     return (
       <svg
@@ -16,11 +15,11 @@ function Icon({ name, size = 20, strokeWidth = 2, className = "" }) {
         viewBox="0 0 24 24"
         fill="none"
         stroke="currentColor"
-        strokeWidth={strokeWidth}
+        strokeWidth="2"
         strokeLinecap="round"
         strokeLinejoin="round"
         className={className}
-        style={{ display: "inline-flex" }}
+        style={{ display: "inline-flex", verticalAlign: "middle" }}
       >
         <rect width="20" height="20" x="2" y="2" rx="5" ry="5" />
         <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
@@ -37,11 +36,11 @@ function Icon({ name, size = 20, strokeWidth = 2, className = "" }) {
         viewBox="0 0 24 24"
         fill="none"
         stroke="currentColor"
-        strokeWidth={strokeWidth}
+        strokeWidth="2"
         strokeLinecap="round"
         strokeLinejoin="round"
         className={className}
-        style={{ display: "inline-flex" }}
+        style={{ display: "inline-flex", verticalAlign: "middle" }}
       >
         <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z" />
         <rect width="4" height="12" x="2" y="9" />
@@ -53,24 +52,23 @@ function Icon({ name, size = 20, strokeWidth = 2, className = "" }) {
   useEffect(() => {
     if (window.lucide && iconRef.current) {
       window.lucide.createIcons({
-        attrs: {
-          width: size,
-          height: size,
-          "stroke-width": strokeWidth,
-          class: className
-        }
+        attrs: { class: `lucide lucide-${name} ${className}` },
+        nameAttr: "data-lucide"
       });
     }
-  }, [name, size, strokeWidth, className]);
+  }, [name, className]);
 
   return (
     <i
       ref={iconRef}
       data-lucide={name}
       style={{
-        width: size,
-        height: size,
-        display: "inline-flex"
+        width: `${size}px`,
+        height: `${size}px`,
+        display: "inline-flex",
+        alignItems: "center",
+        justifyContent: "center",
+        verticalAlign: "middle"
       }}
     />
   );
@@ -81,28 +79,32 @@ function Icon({ name, size = 20, strokeWidth = 2, className = "" }) {
    ========================================================= */
 
 function Reveal({ children, className = "" }) {
+  const [visible, setVisible] = useState(false);
   const ref = useRef(null);
 
   useEffect(() => {
-    const element = ref.current;
-    if (!element) return;
+    const target = ref.current;
+    if (!target) return;
 
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
-          element.classList.add("is-visible");
-          observer.unobserve(element);
+          setVisible(true);
+          observer.disconnect();
         }
       },
-      { threshold: 0.1 }
+      { threshold: 0.12 }
     );
 
-    observer.observe(element);
+    observer.observe(target);
     return () => observer.disconnect();
   }, []);
 
   return (
-    <div ref={ref} className={`reveal ${className}`}>
+    <div
+      ref={ref}
+      className={`reveal ${visible ? "reveal-visible" : ""} ${className}`}
+    >
       {children}
     </div>
   );
@@ -113,58 +115,53 @@ function Reveal({ children, className = "" }) {
    ========================================================= */
 
 function Navbar() {
-  const [menuOpen, setMenuOpen] = useState(false);
+  const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 40);
-    };
-    window.addEventListener("scroll", handleScroll);
+    const handleScroll = () => setScrolled(window.scrollY > 30);
+    window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
-
-  const links = [
-    { label: "Home", href: "#home" },
-    { label: "Services", href: "#services" },
-    { label: "Experience", href: "#experience" },
-    { label: "Process", href: "#process" },
-    { label: "FAQs", href: "#faqs" }
-  ];
 
   return (
     <header className={`navbar ${scrolled ? "navbar-scrolled" : ""}`}>
       <div className="container nav-inner">
-        <a href="#home" className="logo">
-          <span className="logo-mark">A</span>
-          <span>ArtoWebix</span>
+        <a href="#home" className="brand" onClick={() => setOpen(false)}>
+          <span className="brand-symbol">
+            <span></span>
+            <b>✦</b>
+          </span>
+          <span className="brand-name">
+            Arto<span>Webix</span>
+          </span>
         </a>
 
-        <nav className={`nav-links ${menuOpen ? "open" : ""}`}>
-          {links.map((link) => (
-            <a
-              key={link.href}
-              href={link.href}
-              onClick={() => setMenuOpen(false)}
-            >
-              {link.label}
-            </a>
-          ))}
+        <nav className={`nav-links ${open ? "nav-open" : ""}`}>
+          <a href="#services" onClick={() => setOpen(false)}>Services</a>
+          <a href="#experience" onClick={() => setOpen(false)}>Experience</a>
+          <a href="#process" onClick={() => setOpen(false)}>Process</a>
+          <a href="#faqs" onClick={() => setOpen(false)}>FAQs</a>
+
           <a
-            href="#contact"
-            className="nav-cta"
-            onClick={() => setMenuOpen(false)}
+            className="nav-contact"
+            href="https://wa.me/918169292390?text=Hi%20ArtoWebix!%20I%20would%20like%20to%20discuss%20a%20website%20for%20my%20business."
+            target="_blank"
+            rel="noreferrer"
           >
+            <span className="online-dot"></span>
             Let's Talk
+            <Icon name="arrow-up-right" size={15} />
           </a>
         </nav>
 
         <button
           className="mobile-menu"
+          onClick={() => setOpen(!open)}
           aria-label="Toggle menu"
-          onClick={() => setMenuOpen(!menuOpen)}
+          type="button"
         >
-          <Icon name={menuOpen ? "x" : "menu"} size={24} />
+          <Icon name={open ? "x" : "menu"} size={22} />
         </button>
       </div>
     </header>
@@ -172,106 +169,106 @@ function Navbar() {
 }
 
 /* =========================================================
-   HERO
+   HERO SECTION
    ========================================================= */
 
 function Hero() {
   return (
-    <section className="hero-section" id="home">
-      <div className="hero-background">
-        <div className="hero-orb hero-orb-one"></div>
-        <div className="hero-orb hero-orb-two"></div>
-        <div className="hero-grid"></div>
-      </div>
+    <section className="hero" id="home">
+      <div className="hero-orb orb-one"></div>
+      <div className="hero-orb orb-two"></div>
+      <div className="hero-orb orb-three"></div>
+      <div className="grid-overlay"></div>
 
-      <div className="container hero-container">
-        <Reveal className="hero-content">
-          <div className="hero-badge">
-            <span className="badge-dot"></span>
-            Websites built for local businesses
+      <div className="container hero-grid">
+        <Reveal className="hero-copy">
+          <div className="hero-eyebrow">
+            <span className="eyebrow-pulse"></span>
+            Websites built to get attention
           </div>
 
           <h1>
-            Your business deserves
-            <span> a website that sells.</span>
+            Your business deserves more than a basic website.
+            <span className="gradient-text">
+              It deserves a digital experience.
+            </span>
           </h1>
 
-          <p className="hero-description">
-            Premium, interactive websites designed to make local businesses look
-            professional, attract more customers and grow online.
+          <p>
+            We create modern, interactive websites for local businesses that want to look professional, build trust and turn visitors into real enquiries.
           </p>
 
-          <div className="hero-buttons">
-            <a href="#contact" className="btn btn-primary">
-              Start Your Website
-              <Icon name="arrow-up-right" size={18} />
+          <div className="hero-actions">
+            <a href="#experience" className="btn-primary magnetic-button">
+              Explore the experience
+              <Icon name="arrow-right" size={17} />
             </a>
 
-            <a href="#services" className="btn btn-secondary">
-              Explore Services
-              <Icon name="arrow-down" size={18} />
+            <a
+              href="https://wa.me/918169292390?text=Hi%20ArtoWebix!%20I%20would%20like%20to%20discuss%20a%20website."
+              target="_blank"
+              rel="noreferrer"
+              className="btn-secondary"
+            >
+              Start a conversation
+              <Icon name="message-circle" size={17} />
             </a>
           </div>
 
-          <div className="hero-trust">
-            <div className="trust-item">
-              <Icon name="check-circle" size={18} />
-              Mobile Friendly
-            </div>
-            <div className="trust-item">
-              <Icon name="zap" size={18} />
-              Fast & Modern
-            </div>
-            <div className="trust-item">
-              <Icon name="sparkles" size={18} />
-              Premium Design
-            </div>
+          <div className="stats-row">
+            <div className="stat"><strong>48H</strong><span>First concept</span></div>
+            <div className="stat"><strong>100%</strong><span>Responsive</span></div>
+            <div className="stat"><strong>24/7</strong><span>Online presence</span></div>
+            <div className="stat"><strong>1-Tap</strong><span>Customer contact</span></div>
           </div>
         </Reveal>
 
         <Reveal className="hero-visual">
-          <div className="hero-card">
-            <div className="hero-card-top">
-              <div className="browser-dots">
-                <span></span>
-                <span></span>
-                <span></span>
-              </div>
-              <div className="browser-url">artowebix.com</div>
-              <Icon name="more-horizontal" size={18} />
+          <div className="visual-glow"></div>
+          <div className="browser-window">
+            <div className="browser-top">
+              <div className="browser-dots"><span></span><span></span><span></span></div>
+              <div className="browser-address">artowebix.com</div>
+              <Icon name="lock" size={14} />
             </div>
 
-            <div className="hero-card-content">
-              <div className="hero-mini-label">YOUR ONLINE PRESENCE</div>
-              <h3>
-                Make your first
-                <span> impression count.</span>
-              </h3>
-              <p>A modern website that works for your business 24/7.</p>
-
-              <div className="hero-mini-buttons">
-                <span></span>
-                <span></span>
-                <span></span>
+            <div className="website-preview">
+              <div className="preview-nav">
+                <strong>YOUR BRAND</strong>
+                <div><span></span><span></span><span></span></div>
               </div>
 
-              <div className="hero-floating-card hero-floating-one">
-                <Icon name="users" size={18} />
-                <div>
-                  <strong>+48%</strong>
-                  <small>More engagement</small>
+              <div className="preview-content">
+                <div className="preview-tag">✦ Welcome to your new website</div>
+                <h3>Make your <span>first impression</span> unforgettable.</h3>
+                <p>Beautiful design. Clear messaging. Real customer actions.</p>
+                <div className="preview-buttons">
+                  <span>Explore</span>
+                  <span>Contact</span>
                 </div>
               </div>
 
-              <div className="hero-floating-card hero-floating-two">
-                <Icon name="trending-up" size={18} />
-                <div>
-                  <strong>24/7</strong>
-                  <small>Your business online</small>
-                </div>
+              <div className="preview-floating preview-one">
+                <Icon name="message-circle" size={15} />
+                <span>New enquiry</span>
+                <b>+1</b>
+              </div>
+              <div className="preview-floating preview-two">
+                <Icon name="star" size={15} />
+                <span>5.0</span>
+              </div>
+              <div className="preview-floating preview-three">
+                <Icon name="map-pin" size={15} />
+                <span>Nearby customers</span>
+              </div>
+              <div className="preview-cursor">
+                <Icon name="mouse-pointer" size={22} />
               </div>
             </div>
           </div>
+
+          <div className="floating-badge badge-a"><span>⚡</span> Fast & modern</div>
+          <div className="floating-badge badge-b"><span>📱</span> Mobile ready</div>
         </Reveal>
       </div>
     </section>
@@ -284,27 +281,19 @@ function Hero() {
 
 function Marquee() {
   const items = [
-    "LOCAL BUSINESSES",
-    "CAFÉS",
-    "RESTAURANTS",
-    "SALONS",
-    "CLINICS",
-    "RETAIL STORES",
-    "FITNESS BRANDS",
-    "CONSULTANTS"
+    "Interactive design", "Mobile-first", "WhatsApp enquiries",
+    "Google Maps", "Fast websites", "Local businesses", "Premium visuals"
   ];
-
   return (
-    <div className="marquee-section">
+    <section className="marquee-section">
       <div className="marquee-track">
-        {[...items, ...items].map((item, index) => (
-          <div className="marquee-item" key={index}>
-            <span>{item}</span>
-            <span className="marquee-dot">•</span>
+        {[...items, ...items, ...items].map((text, idx) => (
+          <div className="marquee-item" key={idx}>
+            <span>✦</span>{text}
           </div>
         ))}
       </div>
-    </div>
+    </section>
   );
 }
 
@@ -313,86 +302,74 @@ function Marquee() {
    ========================================================= */
 
 function Services() {
-  const [flipped, setFlipped] = useState(null);
+  const [flippedIndex, setFlippedIndex] = useState(null);
 
   const servicesData = [
     {
+      badge: "Retail",
+      num: "01 / RETAIL",
       icon: "store",
-      number: "01",
-      title: "Retail Stores",
-      description:
-        "Showcase your products, offers and store experience with a website that makes customers want to visit.",
-      features: [
-        "Product showcase",
-        "Store information",
-        "Offers & promotions",
-        "WhatsApp enquiries"
-      ]
+      title: "Local Stores",
+      desc: "Turn your products, offers and brand story into a beautiful online storefront.",
+      backHeadline: "Turn browsers into buyers",
+      backDesc: "Give your retail store a strong digital presence that helps customers discover what you sell and why they should visit.",
+      points: ["Product Showcase", "Offers & Promotions", "Store Information"],
+      accent: "accent-blue"
     },
     {
+      badge: "Food",
+      num: "02 / FOOD",
       icon: "coffee",
-      number: "02",
       title: "Cafés & Restaurants",
-      description:
-        "Turn hungry visitors into customers with beautiful menus, location details and easy contact options.",
-      features: [
-        "Digital menu",
-        "Food gallery",
-        "Location & timings",
-        "Reservation enquiries"
-      ]
+      desc: "Menus, galleries, locations and WhatsApp enquiries designed around hungry customers.",
+      backHeadline: "Make mouths water online",
+      backDesc: "Drive hungry patrons directly through your doors with dynamic digital menus and instant table bookings.",
+      points: ["Digital Menu", "Table Booking", "Direct Order Flow"],
+      accent: "accent-coral"
     },
     {
+      badge: "Healthcare",
+      num: "03 / HEALTHCARE",
       icon: "activity",
-      number: "03",
       title: "Doctors & Clinics",
-      description:
-        "Build trust before patients walk through your door with a professional healthcare website.",
-      features: [
-        "Doctor profile",
-        "Services",
-        "Clinic information",
-        "Appointment enquiries"
-      ]
+      desc: "Build trust with clean service pages, timings, location and easy appointment enquiries.",
+      backHeadline: "Trust begins at first click",
+      backDesc: "Present clinical credibility and simplify patient scheduling with accessible service breakdowns.",
+      points: ["Instant Booking", "Doctor Profiles", "Timings & Map"],
+      accent: "accent-cyan"
     },
     {
+      badge: "Beauty",
+      num: "04 / BEAUTY",
       icon: "scissors",
-      number: "04",
       title: "Salons & Studios",
-      description:
-        "Show your work, services and personality with a website that makes clients excited to book.",
-      features: [
-        "Service menu",
-        "Photo gallery",
-        "Pricing",
-        "Booking enquiries"
-      ]
+      desc: "Showcase your work, services, packages and transformations in a premium experience.",
+      backHeadline: "Make your brand look beautiful",
+      backDesc: "Turn your salon into a digital experience that feels as premium as the services you deliver.",
+      points: ["Service Menu", "Transformation Gallery", "1-Tap Booking"],
+      accent: "accent-purple"
     },
     {
-      icon: "dumbbell",
-      number: "05",
-      title: "Fitness Brands",
-      description:
-        "Create an energetic online presence that motivates visitors to take the first step.",
-      features: [
-        "Programs",
-        "Trainer profiles",
-        "Membership details",
-        "Lead generation"
-      ]
-    },
-    {
+      badge: "Professionals",
+      num: "05 / PROFESSIONALS",
       icon: "briefcase",
-      number: "06",
       title: "Consultants",
-      description:
-        "Position your expertise professionally and turn website visitors into valuable enquiries.",
-      features: [
-        "Personal branding",
-        "Services",
-        "Testimonials",
-        "Lead generation"
-      ]
+      desc: "Turn your expertise and credibility into a website that makes clients want to talk.",
+      backHeadline: "High-authority positioning",
+      backDesc: "Establish instant market authority and qualify high-value leads with bespoke portfolio pages.",
+      points: ["Client Testimonials", "Case Studies", "Consultation Forms"],
+      accent: "accent-violet"
+    },
+    {
+      badge: "Lifestyle",
+      num: "06 / LIFESTYLE",
+      icon: "dumbbell",
+      title: "Fitness Brands",
+      desc: "Show classes, trainers, transformations and plans with energetic interactive design.",
+      backHeadline: "Inspire action & signups",
+      backDesc: "Motivate memberships with high-energy visuals, timetable calendars, and class registrations.",
+      points: ["Class Timetable", "Trainer Spotlights", "Trial Signups"],
+      accent: "accent-blue"
     }
   ];
 
@@ -401,74 +378,61 @@ function Services() {
       <div className="container">
         <Reveal className="section-heading">
           <span className="section-label">WHO WE BUILD FOR</span>
-          <h2>
-            Your business.
-            <span> Your style.</span>
-            {" "}Your website.
-          </h2>
-          <p>Every business is different. Your website should be too.</p>
+          <h2>Your business.<span> Your style.</span> Your website.</h2>
+          <p>We design around your customers, your personality and the way your business actually works.</p>
         </Reveal>
 
-        <div className="services-grid">
-          {servicesData.map((service, index) => {
-            const isFlipped = flipped === index;
-
-            return (
-              <Reveal
-                className={`service-card-wrapper ${isFlipped ? "flipped" : ""}`}
-                key={service.title}
+        <div className="business-grid">
+          {servicesData.map((card, idx) => (
+            <Reveal key={idx}>
+              <div 
+                className={`business-card ${card.accent} ${flippedIndex === idx ? "is-flipped" : ""}`}
+                onClick={() => setFlippedIndex(flippedIndex === idx ? null : idx)}
               >
-                <div
-                  className="service-card"
-                  onClick={() => setFlipped(isFlipped ? null : index)}
-                >
-                  <div className="service-card-inner">
-                    <div className="service-card-front">
-                      <div className="service-card-top">
-                        <div className="service-icon">
-                          <Icon name={service.icon} size={24} />
-                        </div>
-                        <span className="service-number">{service.number}</span>
-                      </div>
-
-                      <div className="service-card-middle">
-                        <h3>{service.title}</h3>
-                        <p>{service.description}</p>
-                      </div>
-
-                      <div className="service-card-bottom">
-                        <span>Hover or tap to explore</span>
-                        <Icon name="arrow-right" size={18} />
-                      </div>
+                <div className="business-card-inner">
+                  <div className="business-card-front">
+                    <div className="card-top">
+                      <span className="business-badge">{card.badge}</span>
+                      <div className="business-icon"><Icon name={card.icon} size={22} /></div>
                     </div>
+                    <h3>{card.title}</h3>
+                    <p>{card.desc}</p>
+                    <div className="card-link">
+                      <span>Hover or tap to explore</span>
+                      <Icon name="arrow-up-right" size={16} />
+                    </div>
+                    <div className="card-shine"></div>
+                  </div>
 
-                    <div className="service-card-back">
-                      <div className="service-back-icon">
-                        <Icon name={service.icon} size={28} />
+                  <div className="business-card-back">
+                    <div>
+                      <div className="card-top">
+                        <span className="business-badge-gold">{card.num}</span>
+                        <div className="back-icon-mini">✦</div>
                       </div>
-
-                      <h3>{service.title}</h3>
-                      <p>Everything you need to build a strong online presence.</p>
-
-                      <ul>
-                        {service.features.map((feature) => (
-                          <li key={feature}>
-                            <Icon name="check" size={16} />
-                            {feature}
-                          </li>
+                      <h4 className="back-tagline">{card.backHeadline}</h4>
+                      <p className="back-desc">{card.backDesc}</p>
+                      <ul className="back-feature-list">
+                        {card.points.map((pt, pIdx) => (
+                          <li key={pIdx}><span>✓</span> {pt}</li>
                         ))}
                       </ul>
-
-                      <a href="#contact" className="service-back-link">
-                        Get Started
-                        <Icon name="arrow-up-right" size={16} />
-                      </a>
                     </div>
+                    <a 
+                      href={`https://wa.me/918169292390?text=Hi%20ArtoWebix!%20I%20am%20interested%20in%20a%20website%20for%20${encodeURIComponent(card.title)}.`}
+                      target="_blank" 
+                      rel="noreferrer"
+                      className="card-back-cta"
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      <span>Explore this package</span>
+                      <Icon name="arrow-right" size={14} />
+                    </a>
                   </div>
                 </div>
-              </Reveal>
-            );
-          })}
+              </div>
+            </Reveal>
+          ))}
         </div>
       </div>
     </section>
@@ -476,117 +440,90 @@ function Services() {
 }
 
 /* =========================================================
-   EXPERIENCE
+   EXPERIENCE SECTION
    ========================================================= */
 
 function Experience() {
-  const [showMore, setShowMore] = useState(false);
+  const [active, setActive] = useState(0);
+  const [showAll, setShowAll] = useState(false);
 
-  const features = [
-    {
-      icon: "smartphone",
-      title: "Mobile First",
-      text: "Looks great on every phone, tablet and desktop."
-    },
-    {
-      icon: "zap",
-      title: "Fast Loading",
-      text: "Optimized experiences that keep visitors engaged."
-    },
-    {
-      icon: "search",
-      title: "SEO Ready",
-      text: "Built with search visibility in mind."
-    },
-    {
-      icon: "message-circle",
-      title: "WhatsApp Integration",
-      text: "Let customers contact you instantly."
-    },
-    {
-      icon: "map-pin",
-      title: "Google Maps",
-      text: "Make it easy for customers to find you."
-    },
-    {
-      icon: "image",
-      title: "Premium Galleries",
-      text: "Show your products, work and brand beautifully."
-    },
-    {
-      icon: "shield-check",
-      title: "Secure",
-      text: "Modern development practices for a safer website."
-    },
-    {
-      icon: "mouse-pointer",
-      title: "Interactive",
-      text: "Animations and interactions that keep visitors engaged."
-    },
-    {
-      icon: "heart",
-      title: "User Friendly",
-      text: "Simple experiences your customers understand."
-    },
-    {
-      icon: "activity",
-      title: "Conversion Focused",
-      text: "Designed to turn attention into enquiries."
-    },
-    {
-      icon: "briefcase",
-      title: "Professional",
-      text: "A website that builds credibility for your brand."
-    },
-    {
-      icon: "refresh-cw",
-      title: "Easy Updates",
-      text: "Keep your content fresh as your business grows."
-    }
+  const featureItems = [
+    { icon: "smartphone", title: "Mobile-first", text: "Looks and feels native on every smartphone, tablet, and desktop display." },
+    { icon: "message-circle", title: "WhatsApp Ready", text: "Pre-filled enquiry messages so potential customers reach you in one tap." },
+    { icon: "map-pin", title: "Local Discovery", text: "Integrated Google Maps, instant directions, and localized SEO discoverability." },
+    { icon: "sparkles", title: "Interactive Design", text: "High-end transitions and micro-interactions that make your business unforgettable." },
+    { icon: "image", title: "Visual Storytelling", text: "High-contrast galleries showcasing products, projects, and work outcomes." },
+    { icon: "mouse-pointer", title: "Easy Actions", text: "Frictionless forms, instant calling buttons, and direct booking flows." },
+    { icon: "phone-call", title: "1-Tap Quick Call", text: "Direct tel links placed right at thumb reach for immediate phone enquiries." },
+    { icon: "zap", title: "Ultra-Fast Mobile Speed", text: "Lightweight, zero-bloat code optimized to load instantly even on 4G connections." },
+    { icon: "navigation", title: "Thumb-Zone Bottom Bar", text: "Floating bottom actions for quick WhatsApp, calling, and location discovery on mobile." },
+    { icon: "qr-code", title: "QR Code Ready", text: "Scan-ready links for table tents, visiting cards, billing counters, and packaging." },
+    { icon: "share-2", title: "Instant Social Share", text: "Direct sharing triggers so clients can forward your business link to friends on WhatsApp." },
+    { icon: "shield-check", title: "Safe & SSL Secured", text: "Encrypted HTTPS connections with automated security safeguards out of the box." }
   ];
 
-  const visibleFeatures = showMore ? features : features.slice(0, 6);
+  const visibleFeatures = showAll ? featureItems : featureItems.slice(0, 6);
 
   return (
-    <section className="section experience-section" id="experience">
+    <section className="experience-section" id="experience">
       <div className="container">
         <Reveal className="section-heading light-heading">
-          <span className="section-label">BUILT FOR RESULTS</span>
-          <h2>
-            More than a website.
-            <span> An experience.</span>
-          </h2>
-          <p>
-            We combine clean design, smooth interactions and smart features to
-            create websites people remember.
-          </p>
+          <span className="section-label">THE ARTOWEBIX EXPERIENCE</span>
+          <h2>Not just a website.<span> Something people enjoy using.</span></h2>
+          <p>Every section has a purpose — attract attention, build trust and make contacting your business effortless.</p>
         </Reveal>
 
-        <div className="features-grid">
-          {visibleFeatures.map((feature) => (
-            <Reveal className="feature-card" key={feature.title}>
-              <div className="feature-icon">
-                <Icon name={feature.icon} size={22} />
-              </div>
-              <div>
-                <h3>{feature.title}</h3>
-                <p>{feature.text}</p>
-              </div>
-            </Reveal>
-          ))}
-        </div>
+        <div className="experience-layout">
+          <div className="experience-menu-wrap">
+            <div className="experience-menu">
+              {visibleFeatures.map((feature, index) => (
+                <button
+                  key={index}
+                  type="button"
+                  className={`experience-option ${active === index ? "active" : ""}`}
+                  onClick={() => setActive(index)}
+                >
+                  <span className="option-icon"><Icon name={feature.icon} size={19} /></span>
+                  <span className="option-copy">
+                    <strong>{feature.title}</strong>
+                    <small>{feature.text}</small>
+                  </span>
+                  <Icon name="arrow-up-right" size={16} />
+                </button>
+              ))}
+            </div>
 
-        <div className="experience-more">
-          <button
-            className="text-button"
-            onClick={() => setShowMore(!showMore)}
-          >
-            {showMore ? "Show fewer features" : "Explore more features (+6)"}
-            <Icon
-              name={showMore ? "chevron-up" : "chevron-down"}
-              size={18}
-            />
-          </button>
+            <div className="features-load-more">
+              <button
+                type="button"
+                className="btn-load-more"
+                onClick={() => setShowAll(!showAll)}
+              >
+                <span>{showAll ? "Show fewer features" : `Explore more features (+${featureItems.length - 6})`}</span>
+                <Icon name={showAll ? "chevron-up" : "chevron-down"} size={16} />
+              </button>
+            </div>
+          </div>
+
+          <div className="experience-display">
+            <div className="display-grid"></div>
+            <div className="display-content">
+              <span className="display-kicker">FEATURE {String(active + 1).padStart(2, "0")}</span>
+              <div className="display-icon">
+                <Icon name={featureItems[active]?.icon || "sparkles"} size={30} />
+              </div>
+              <h3>{featureItems[active]?.title}</h3>
+              <p>{featureItems[active]?.text}</p>
+              <div className="display-progress"><span></span></div>
+              <div className="display-small-cards">
+                <div><Icon name="check" size={14} /> Smooth interaction</div>
+                <div><Icon name="check" size={14} /> Built for customers</div>
+                <div><Icon name="check" size={14} /> Designed for action</div>
+              </div>
+            </div>
+            <div className="display-orb"></div>
+            <div className="display-orb-two"></div>
+          </div>
         </div>
       </div>
     </section>
@@ -598,53 +535,44 @@ function Experience() {
    ========================================================= */
 
 function Process() {
-  const steps = [
-    {
-      number: "01",
-      icon: "message-square",
-      title: "Tell us about your business",
-      text: "We learn about your business, customers, goals and what makes you different."
-    },
-    {
-      number: "02",
-      icon: "palette",
-      title: "We design your experience",
-      text: "We create a modern visual direction and website structure around your brand."
-    },
-    {
-      number: "03",
-      icon: "rocket",
-      title: "Launch & grow",
-      text: "Your website goes live and becomes a powerful part of your business."
-    }
-  ];
-
   return (
     <section className="section process-section" id="process">
       <div className="container">
         <Reveal className="section-heading">
           <span className="section-label">HOW IT WORKS</span>
-          <h2>
-            Simple process.
-            <span> Powerful result.</span>
-          </h2>
-          <p>
-            No complicated process. Just a clear path from idea to a
-            professional online presence.
-          </p>
+          <h2>Simple process.<span> Serious results.</span></h2>
+          <p>No complicated meetings. No confusing technical language. Just a clear path from idea to launch.</p>
         </Reveal>
 
         <div className="process-grid">
-          {steps.map((step) => (
-            <Reveal className="process-card" key={step.number}>
-              <div className="process-number">{step.number}</div>
-              <div className="process-icon">
-                <Icon name={step.icon} size={24} />
-              </div>
-              <h3>{step.title}</h3>
-              <p>{step.text}</p>
-            </Reveal>
-          ))}
+          <Reveal>
+            <div className="process-card">
+              <div className="process-number">01</div>
+              <div className="process-icon"><Icon name="message-circle" size={25} /></div>
+              <h3>Tell us your idea</h3>
+              <p>Tell us about your business, customers and what you want your website to achieve.</p>
+              <div className="process-arrow"><Icon name="arrow-right" size={20} /></div>
+            </div>
+          </Reveal>
+
+          <Reveal>
+            <div className="process-card">
+              <div className="process-number">02</div>
+              <div className="process-icon"><Icon name="palette" size={25} /></div>
+              <h3>We design the experience</h3>
+              <p>We turn your information into a visual experience with modern layouts, motion and interactions.</p>
+              <div className="process-arrow"><Icon name="arrow-right" size={20} /></div>
+            </div>
+          </Reveal>
+
+          <Reveal>
+            <div className="process-card">
+              <div className="process-number">03</div>
+              <div className="process-icon"><Icon name="rocket" size={25} /></div>
+              <h3>Launch & grow</h3>
+              <p>After testing everything across devices, we help you launch and keep your website fresh.</p>
+            </div>
+          </Reveal>
         </div>
       </div>
     </section>
@@ -652,36 +580,33 @@ function Process() {
 }
 
 /* =========================================================
-   CONTACT CTA
+   CONTACT CTA SECTION
    ========================================================= */
 
 function ContactCTA() {
   return (
-    <section className="contact-section" id="contact">
+    <section className="cta-section" id="contact">
+      <div className="cta-orb cta-orb-one"></div>
+      <div className="cta-orb cta-orb-two"></div>
+
       <div className="container">
-        <Reveal className="contact-card">
-          <div className="contact-glow contact-glow-one"></div>
-          <div className="contact-glow contact-glow-two"></div>
+        <Reveal className="cta-card">
+          <div className="cta-glow cta-glow-one"></div>
+          <div className="cta-glow cta-glow-two"></div>
 
-          <div className="contact-content">
-            <span className="section-label">READY WHEN YOU ARE</span>
-            <h2>
-              Let's build something
-              <span> your customers remember.</span>
-            </h2>
-            <p>
-              Tell us about your business and let's create a website that makes
-              your brand stand out.
-            </p>
+          <div className="cta-content">
+            <span className="section-label light">READY WHEN YOU ARE</span>
+            <h2>Let's build something<span> your customers remember.</span></h2>
+            <p>Tell us about your business and let's create a website that makes your brand stand out.</p>
 
-            <div className="contact-buttons">
+            <div className="cta-actions">
               <a
-                href="https://wa.me/918169292390"
+                href="https://wa.me/918169292390?text=Hi%20ArtoWebix!%20I%20want%20to%20discuss%20a%20new%20website."
                 target="_blank"
-                rel="noopener noreferrer"
+                rel="noreferrer"
                 className="btn btn-primary"
               >
-                <Icon name="message-circle" size={19} />
+                <Icon name="message-circle" size={18} />
                 WhatsApp Us
               </a>
 
@@ -689,9 +614,14 @@ function ContactCTA() {
                 href="mailto:namaste@artowebix.com"
                 className="btn btn-secondary"
               >
-                <Icon name="mail" size={19} />
+                <Icon name="mail" size={18} />
                 Send Email
               </a>
+            </div>
+
+            <div className="cta-note">
+              <span className="online-dot"></span>
+              Currently accepting new projects
             </div>
           </div>
         </Reveal>
@@ -705,121 +635,67 @@ function ContactCTA() {
    ========================================================= */
 
 function FAQ() {
-  const [openIndex, setOpenIndex] = useState(null);
+  const [open, setOpen] = useState(0);
   const [showAll, setShowAll] = useState(false);
 
-  const faqs = [
-    {
-      question: "How much does a website cost?",
-      answer:
-        "Every website is different. The cost depends on the number of pages, features, design complexity and business requirements."
-    },
-    {
-      question: "How long does it take to build a website?",
-      answer:
-        "Most business websites can be designed and developed within a few days to a few weeks depending on the project."
-    },
-    {
-      question: "Will my website work on mobile phones?",
-      answer:
-        "Yes. Every website is designed to be responsive and optimized for mobile, tablet and desktop screens."
-    },
-    {
-      question: "Can you add WhatsApp to my website?",
-      answer:
-        "Yes. We can add WhatsApp buttons so customers can contact your business directly from your website."
-    },
-    {
-      question: "Can you help with the website content?",
-      answer:
-        "Yes. We can help structure your content and present your services, products and business information clearly."
-    },
-    {
-      question: "Will my website appear on Google?",
-      answer:
-        "Your website can be built with SEO-friendly structure and technical best practices. Search ranking itself depends on many factors."
-    },
-    {
-      question: "Can you connect Google Maps?",
-      answer:
-        "Yes. We can integrate Google Maps so customers can easily find your business location."
-    },
-    {
-      question: "Can I update my menu, prices, or photos later on?",
-      answer:
-        "Yes. Depending on your setup, your website can be structured so content can be updated as your business changes."
-    },
-    {
-      question: "Can you redesign my existing website?",
-      answer:
-        "Yes. We can modernize an existing website while improving its design, usability and mobile experience."
-    },
-    {
-      question: "How do I get started?",
-      answer:
-        "Simply contact us on WhatsApp or email and tell us a little about your business. We will take it from there."
-    }
+  const faqItems = [
+    { q: "I don't know anything about websites. Can you still help?", a: "Absolutely. You don't need technical knowledge. We handle the design, structure, responsiveness and essential setup while explaining everything in simple language." },
+    { q: "Can customers contact me through WhatsApp?", a: "Yes. We connect prominent WhatsApp buttons throughout the website with pre-written enquiry messages so customers can reach you in a single tap." },
+    { q: "Will the website work on mobile?", a: "Yes. Every website is built mobile-first with smooth gestures and responsive layouts tailored for smartphones, tablets, and desktops." },
+    { q: "Can I show my services and prices?", a: "Yes. We can create service cards, pricing sections, interactive menus, packages, galleries, and custom tabs depending on your business needs." },
+    { q: "Can you add Google Maps and calling?", a: "Yes. Visitors can access your precise map location, one-tap turn-by-turn directions, and direct phone dialer links straight from the site." },
+    { q: "How long does it take to launch a full website?", a: "Most local business websites are designed, developed, and ready to go live within 5 to 10 working days, following your initial concept review within 48 hours." },
+    { q: "Do I have to pay any monthly recurring platform fees?", a: "No hidden monthly platform software subscriptions. You only pay for your standard annual domain name and fast cloud hosting, which we assist you in setting up cleanly." },
+    { q: "Can customers book appointments or reserve tables online?", a: "Yes! We configure direct appointment inquiry forms and WhatsApp reservation links with automated pre-filled details to eliminate booking friction." },
+    { q: "Will my business show up on Google search results?", a: "Yes. We build all pages with clean semantic markup, fast load speeds, local business metadata, and on-page SEO best practices to help Google index and rank your business." },
+    { q: "Can I update my menu, prices, or photos later on?", a: "Yes. We organize websites with structured, easily editable sections and provide simple guidance so you can update pricing, offers, and gallery photos whenever needed." }
   ];
 
-  const visibleFaqs = showAll ? faqs : faqs.slice(0, 5);
+  const visibleFaqs = showAll ? faqItems : faqItems.slice(0, 5);
 
   return (
     <section className="section faq-section" id="faqs">
-      <div className="container faq-container">
+      <div className="container">
         <Reveal className="section-heading">
           <span className="section-label">QUESTIONS</span>
-          <h2>
-            Frequently asked
-            <span> questions.</span>
-          </h2>
+          <h2>Before you ask,<span> we've probably answered it.</span></h2>
         </Reveal>
 
-        <Reveal className="faq-list">
-          {visibleFaqs.map((faq) => {
-            const actualIndex = faqs.indexOf(faq);
-            const isOpen = openIndex === actualIndex;
-
+        <div className="faq-list">
+          {visibleFaqs.map((faq, index) => {
+            const active = open === index;
             return (
-              <div
-                className={`faq-item ${isOpen ? "active" : ""}`}
-                key={faq.question}
-              >
-                <button
-                  className="faq-question"
-                  onClick={() =>
-                    setOpenIndex(isOpen ? null : actualIndex)
-                  }
-                  aria-expanded={isOpen}
-                >
-                  <span>{faq.question}</span>
-                  <span className="faq-icon">
-                    <Icon name={isOpen ? "minus" : "plus"} size={18} />
-                  </span>
-                </button>
+              <Reveal key={index}>
+                <div className={`faq-item ${active ? "faq-active" : ""}`}>
+                  <button
+                    type="button"
+                    onClick={() => setOpen(active ? -1 : index)}
+                    aria-expanded={active}
+                  >
+                    <span>{faq.q}</span>
+                    <span className="faq-icon">{active ? "−" : "+"}</span>
+                  </button>
 
-                <div
-                  className="faq-answer"
-                  style={{
-                    maxHeight: isOpen ? "240px" : "0px"
-                  }}
-                >
-                  <p>{faq.answer}</p>
+                  <div
+                    className="faq-answer"
+                    style={{ maxHeight: active ? "300px" : "0px" }}
+                  >
+                    <p>{faq.a}</p>
+                  </div>
                 </div>
-              </div>
+              </Reveal>
             );
           })}
-        </Reveal>
+        </div>
 
-        <div className="faq-more">
+        <div className="faq-load-more">
           <button
+            type="button"
             className="text-button"
             onClick={() => setShowAll(!showAll)}
           >
-            {showAll ? "Show fewer questions" : "View all questions"}
-            <Icon
-              name={showAll ? "chevron-up" : "chevron-down"}
-              size={18}
-            />
+            <span>{showAll ? "Show fewer questions" : "View all questions"}</span>
+            <Icon name={showAll ? "chevron-up" : "chevron-down"} size={16} />
           </button>
         </div>
       </div>
@@ -835,78 +711,82 @@ function Footer() {
   return (
     <footer className="footer">
       <div className="container">
-        <div className="footer-main">
-          <div className="footer-brand">
-            <a href="#home" className="logo">
-              <span className="logo-mark">A</span>
-              <span>ArtoWebix</span>
+        <div className="footer-main-grid">
+          <div className="footer-col brand-col">
+            <a href="#home" className="brand">
+              <span className="brand-symbol"><span></span><b>✦</b></span>
+              <span className="brand-name">Arto<span>Webix</span></span>
             </a>
-            <p>Premium websites for modern local businesses.</p>
+            <p className="brand-desc">
+              Crafting high-impact, interactive websites for local businesses ready to step up, build credibility, and convert more visitors.
+            </p>
             <div className="footer-socials">
-              <a
-                href="https://instagram.com/artowebix"
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="Instagram"
-                className="social-btn"
-              >
-                <Icon name="instagram" size={18} />
+              <a href="https://instagram.com/artowebix" target="_blank" rel="noreferrer" aria-label="Instagram" className="social-btn">
+                <Icon name="instagram" size={17} />
               </a>
-              <a
-                href="https://linkedin.com/company/artowebix"
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="LinkedIn"
-                className="social-btn"
-              >
-                <Icon name="linkedin" size={18} />
+              <a href="https://linkedin.com/company/artowebix" target="_blank" rel="noreferrer" aria-label="LinkedIn" className="social-btn">
+                <Icon name="linkedin" size={17} />
               </a>
-              <a
-                href="https://wa.me/918169292390"
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="WhatsApp"
-                className="social-btn"
-              >
-                <Icon name="message-circle" size={18} />
+              <a href="https://wa.me/918169292390" target="_blank" rel="noreferrer" aria-label="WhatsApp" className="social-btn">
+                <Icon name="message-circle" size={17} />
+              </a>
+              <a href="tel:+918169292390" aria-label="Phone" className="social-btn">
+                <Icon name="phone" size={17} />
               </a>
             </div>
           </div>
 
-          <div className="footer-links">
-            <div className="footer-column">
-              <h4>Explore</h4>
-              <a href="#home">Home</a>
-              <a href="#services">Services</a>
-              <a href="#experience">Experience</a>
-              <a href="#process">Process</a>
-              <a href="#faqs">FAQs</a>
-            </div>
+          <div className="footer-col">
+            <h4 className="footer-col-title">Navigation</h4>
+            <ul className="footer-nav-list">
+              <li><a href="#home">Home</a></li>
+              <li><a href="#services">Services</a></li>
+              <li><a href="#experience">Features</a></li>
+              <li><a href="#process">How it Works</a></li>
+              <li><a href="#faqs">FAQs</a></li>
+            </ul>
+          </div>
 
-            <div className="footer-column">
-              <h4>Services</h4>
-              <a href="#services">Retail Stores</a>
-              <a href="#services">Cafés & Restaurants</a>
-              <a href="#services">Doctors & Clinics</a>
-              <a href="#services">Salons & Studios</a>
-              <a href="#services">Fitness Brands</a>
+          <div className="footer-col">
+            <h4 className="footer-col-title">Direct Connect</h4>
+            <div className="footer-action-list">
+              <a href="https://wa.me/918169292390" target="_blank" rel="noreferrer" className="footer-contact-link">
+                <span className="icon-wrap"><Icon name="message-circle" size={15} /></span>
+                <span>WhatsApp Enquiry</span>
+              </a>
+              <a href="tel:+918169292390" className="footer-contact-link">
+                <span className="icon-wrap"><Icon name="phone-call" size={15} /></span>
+                <span>+91 81692 92390</span>
+              </a>
+              <a href="mailto:namaste@artowebix.com" className="footer-contact-link">
+                <span className="icon-wrap"><Icon name="mail" size={15} /></span>
+                <span>namaste@artowebix.com</span>
+              </a>
             </div>
+          </div>
 
-            <div className="footer-column">
-              <h4>Connect</h4>
-              <a href="tel:+918169292390">+91 81692 92390</a>
-              <a href="mailto:namaste@artowebix.com">namaste@artowebix.com</a>
+          <div className="footer-col">
+            <h4 className="footer-col-title">Studio Location</h4>
+            <p className="footer-address">
+              <Icon name="map-pin" size={16} />
               <span>Bandra Kurla Complex, Mumbai, Maharashtra 400051</span>
+            </p>
+            <div className="studio-status">
+              <span className="online-dot"></span>
+              <span>Available for projects in Mumbai, India & Worldwide</span>
             </div>
           </div>
         </div>
 
         <div className="footer-bottom">
-          <p>© {new Date().getFullYear()} ArtoWebix. All rights reserved.</p>
-          <a href="#home" className="back-to-top">
-            Back to top
-            <Icon name="arrow-up" size={16} />
-          </a>
+          <span>© {new Date().getFullYear()} ArtoWebix. All rights reserved.</span>
+          <div className="footer-legal">
+            <a href="#privacy">Privacy</a>
+            <span>•</span>
+            <a href="#terms">Terms</a>
+            <span>•</span>
+            <span>Crafted with Gold & Dark Navy</span>
+          </div>
         </div>
       </div>
     </footer>
@@ -914,7 +794,7 @@ function Footer() {
 }
 
 /* =========================================================
-   APP
+   APP MOUNT
    ========================================================= */
 
 function App() {
@@ -934,10 +814,6 @@ function App() {
     </div>
   );
 }
-
-/* =========================================================
-   RENDER
-   ========================================================= */
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(<App />);
