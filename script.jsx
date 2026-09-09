@@ -515,7 +515,7 @@ function Services() {
                     </ul>
                   </div>
                   <a 
-                    href="https://wa.me/919876543210?text=Hi%20ArtoWebix!%20I%20am%20interested%20in%20a%20website%20for%20Salons%20and%20Studios."
+                    href="https://wa.me/918169292390?text=Hi%20ArtoWebix!%20I%20am%20interested%20in%20a%20website%20for%20Salons%20and%20Studios."
                     target="_blank" 
                     rel="noreferrer"
                     className="card-back-cta"
@@ -985,11 +985,11 @@ function FAQ() {
     },
     {
       q: "How long does it take to launch a full website?",
-      a: "Most local business websites are designed, developed, and ready to go live within 5 to 10 working days, following your initial concept review within 48 hours."
+      a: "Most local business websites are designed, developed, and ready to go live within 3 to 5 working days, following your initial concept review within 48 hours."
     },
     {
       q: "Do I have to pay any monthly recurring platform fees?",
-      a: "No hidden monthly platform software subscriptions. You only pay for your standard annual domain name and fast cloud hosting, which we assist you in setting up cleanly."
+      a: "No hidden monthly platform software subscriptions. You only pay for your standard annual domain name, which we assist you in setting up cleanly."
     },
     {
       q: "Can customers book appointments or reserve tables online?",
@@ -1000,8 +1000,8 @@ function FAQ() {
       a: "Yes. We build all pages with clean semantic markup, fast load speeds, local business metadata, and on-page SEO best practices to help Google index and rank your business."
     },
     {
-      q: "Can I update my menu, prices, or photos later on?",
-      a: "Yes. We organize websites with structured, easily editable sections and provide simple guidance so you can update pricing, offers, and gallery photos whenever needed."
+      q: "Do I own my website and domain once the project is finished?",
+      a: "Yes, 100%. Once final payment is completed, all code, design files, and domain credentials are fully transferred to you with zero recurring agency lock-in fees."
     }
   ];
 
@@ -1091,42 +1091,76 @@ function Footer() {
               Crafting high-impact, interactive websites for local businesses
               ready to step up, build credibility, and convert more visitors.
             </p>
-            <div className="footer-socials">
-              <a
-                href="https://instagram.com/artowebix"
-                target="_blank"
-                rel="noreferrer"
-                aria-label="Instagram"
-                className="social-btn"
-              >
-                <Icon name="instagram" size={17} />
-              </a>
-              <a
-                href="https://linkedin.com/company/artowebix"
-                target="_blank"
-                rel="noreferrer"
-                aria-label="LinkedIn"
-                className="social-btn"
-              >
-                <Icon name="linkedin" size={17} />
-              </a>
-              <a
-                href="https://wa.me/919876543210"
-                target="_blank"
-                rel="noreferrer"
-                aria-label="WhatsApp"
-                className="social-btn"
-              >
-                <Icon name="message-circle" size={17} />
-              </a>
-              <a
-                href="tel:+919876543210"
-                aria-label="Phone"
-                className="social-btn"
-              >
-                <Icon name="phone" size={17} />
-              </a>
-            </div>
+            ```jsx
+<div className="footer-socials">
+
+  {/* Instagram */}
+  <a
+    href="https://instagram.com/artowebix"
+    target="_blank"
+    rel="noreferrer"
+    aria-label="Instagram"
+    className="social-btn"
+  >
+    <svg
+      width="17"
+      height="17"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <rect x="2" y="2" width="20" height="20" rx="5" />
+      <circle cx="12" cy="12" r="4" />
+      <circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none" />
+    </svg>
+  </a>
+
+  {/* LinkedIn */}
+  <a
+    href="https://linkedin.com/company/artowebix"
+    target="_blank"
+    rel="noreferrer"
+    aria-label="LinkedIn"
+    className="social-btn"
+  >
+    <svg
+      width="17"
+      height="17"
+      viewBox="0 0 24 24"
+      fill="currentColor"
+    >
+      <path d="M4.98 3.5C4.98 4.88 3.87 6 2.5 6S0 4.88 0 3.5 1.11 1 2.5 1s2.48 1.12 2.48 2.5Z" />
+      <path d="M.5 8h4V23h-4V8Z" />
+      <path d="M8 8h3.83v2.05h.05c.53-1.01 1.83-2.55 3.77-2.55 4.03 0 4.77 2.65 4.77 6.1V23h-4v-8.32c0-1.99-.04-4.55-2.77-4.55-2.77 0-3.19 2.16-3.19 4.4V23H8V8Z" />
+    </svg>
+  </a>
+
+  {/* WhatsApp */}
+  <a
+    href="https://wa.me/918169292390"
+    target="_blank"
+    rel="noreferrer"
+    aria-label="WhatsApp"
+    className="social-btn"
+  >
+    <Icon name="message-circle" size={17} />
+  </a>
+
+  {/* Phone */}
+  <a
+    href="tel:+918169292390"
+    aria-label="Phone"
+    className="social-btn"
+  >
+    <Icon name="phone" size={17} />
+  </a>
+
+</div>
+```
+
           </div>
 
           <div className="footer-col">
@@ -1144,7 +1178,7 @@ function Footer() {
             <h4 className="footer-col-title">Direct Connect</h4>
             <div className="footer-action-list">
               <a
-                href="https://wa.me/919876543210?text=Hello%20ArtoWebix!%20I'd%20like%20to%20get%20in%20touch."
+                href="https://wa.me/918169292390?text=Hello%20ArtoWebix!%20I'd%20like%20to%20get%20in%20touch."
                 target="_blank"
                 rel="noreferrer"
                 className="footer-contact-link"
@@ -1154,11 +1188,11 @@ function Footer() {
               </a>
 
               <a
-                href="tel:+919876543210"
+                href="tel:+918169292390"
                 className="footer-contact-link"
               >
                 <span className="icon-wrap"><Icon name="phone-call" size={15} /></span>
-                <span>+91 98765 43210</span>
+                <span>+91 81692 92390</span>
               </a>
 
               <a
