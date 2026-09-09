@@ -99,7 +99,7 @@ function Navbar() {
 
           <a
             className="nav-contact"
-            href="https://wa.me/919876543210?text=Hi%20ArtoWebix!%20I%20would%20like%20to%20discuss%20a%20website%20for%20my%20business."
+            href="https://wa.me/918169292390?text=Hi%20ArtoWebix!%20I%20would%20like%20to%20discuss%20a%20website%20for%20my%20business."
             target="_blank"
             rel="noreferrer"
           >
@@ -158,7 +158,7 @@ function Hero() {
             </a>
 
             <a
-              href="https://wa.me/919876543210?text=Hi%20ArtoWebix!%20I%20would%20like%20to%20discuss%20a%20website."
+              href="https://wa.me/918169292390?text=Hi%20ArtoWebix!%20I%20would%20like%20to%20discuss%20a%20website."
               target="_blank"
               rel="noreferrer"
               className="btn-secondary"
@@ -359,7 +359,7 @@ function Services() {
                     </ul>
                   </div>
                   <a 
-                    href="https://wa.me/919876543210?text=Hi%20ArtoWebix!%20I%20am%20interested%20in%20a%20website%20for%20Local%20Stores."
+                    href="https://wa.me/918169292390?text=Hi%20ArtoWebix!%20I%20am%20interested%20in%20a%20website%20for%20Local%20Stores."
                     target="_blank" 
                     rel="noreferrer"
                     className="card-back-cta"
@@ -411,7 +411,7 @@ function Services() {
                     </ul>
                   </div>
                   <a 
-                    href="https://wa.me/919876543210?text=Hi%20ArtoWebix!%20I%20am%20interested%20in%20a%20website%20for%20Cafes%20and%20Restaurants."
+                    href="https://wa.me/8169292390?text=Hi%20ArtoWebix!%20I%20am%20interested%20in%20a%20website%20for%20Cafes%20and%20Restaurants."
                     target="_blank" 
                     rel="noreferrer"
                     className="card-back-cta"
@@ -463,7 +463,7 @@ function Services() {
                     </ul>
                   </div>
                   <a 
-                    href="https://wa.me/919876543210?text=Hi%20ArtoWebix!%20I%20am%20interested%20in%20a%20website%20for%20Doctors%20and%20Clinics."
+                    href="https://wa.me/918169292390?text=Hi%20ArtoWebix!%20I%20am%20interested%20in%20a%20website%20for%20Doctors%20and%20Clinics."
                     target="_blank" 
                     rel="noreferrer"
                     className="card-back-cta"
@@ -567,7 +567,7 @@ function Services() {
                     </ul>
                   </div>
                   <a 
-                    href="https://wa.me/919876543210?text=Hi%20ArtoWebix!%20I%20am%20interested%20in%20a%20website%20for%20Consultants."
+                    href="https://wa.me/918169292390?text=Hi%20ArtoWebix!%20I%20am%20interested%20in%20a%20website%20for%20Consultants."
                     target="_blank" 
                     rel="noreferrer"
                     className="card-back-cta"
@@ -619,7 +619,7 @@ function Services() {
                     </ul>
                   </div>
                   <a 
-                    href="https://wa.me/919876543210?text=Hi%20ArtoWebix!%20I%20am%20interested%20in%20a%20website%20for%20Fitness%20Brands."
+                    href="https://wa.me/918169292390?text=Hi%20ArtoWebix!%20I%20am%20interested%20in%20a%20website%20for%20Fitness%20Brands."
                     target="_blank" 
                     rel="noreferrer"
                     className="card-back-cta"
@@ -926,7 +926,7 @@ function ContactCTA() {
 
           <div className="cta-actions">
             <a
-              href="https://wa.me/919876543210?text=Hi%20ArtoWebix!%20I%20want%20to%20discuss%20a%20new%20website."
+              href="https://wa.me/918169292390?text=Hi%20ArtoWebix!%20I%20want%20to%20discuss%20a%20new%20website."
               target="_blank"
               rel="noreferrer"
               className="btn-white"
@@ -936,7 +936,7 @@ function ContactCTA() {
             </a>
 
             <a
-              href="tel:+919876543210"
+              href="tel:+918169292390"
               className="btn-outline-white"
             >
               Call us
