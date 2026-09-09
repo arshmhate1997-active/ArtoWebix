@@ -1,15 +1,54 @@
 const { useState, useEffect, useRef } = React;
 
 /* =========================================================
-   ARTOWEBIX — INTERACTIVE WEBSITE STUDIO
-   ========================================================= */
-
-/* =========================================================
-   ICON
+   ICON COMPONENT
    ========================================================= */
 
 function Icon({ name, size = 20, strokeWidth = 2, className = "" }) {
   const iconRef = useRef(null);
+
+  // Social SVGs fallback for icons removed from Lucide
+  if (name === "instagram") {
+    return (
+      <svg
+        width={size}
+        height={size}
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth={strokeWidth}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        className={className}
+        style={{ display: "inline-flex" }}
+      >
+        <rect width="20" height="20" x="2" y="2" rx="5" ry="5" />
+        <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
+        <line x1="17.5" x2="17.51" y1="6.5" y2="6.5" />
+      </svg>
+    );
+  }
+
+  if (name === "linkedin") {
+    return (
+      <svg
+        width={size}
+        height={size}
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth={strokeWidth}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        className={className}
+        style={{ display: "inline-flex" }}
+      >
+        <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z" />
+        <rect width="4" height="12" x="2" y="9" />
+        <circle cx="4" cy="4" r="2" />
+      </svg>
+    );
+  }
 
   useEffect(() => {
     if (window.lucide && iconRef.current) {
@@ -22,7 +61,7 @@ function Icon({ name, size = 20, strokeWidth = 2, className = "" }) {
         }
       });
     }
-  });
+  }, [name, size, strokeWidth, className]);
 
   return (
     <i
@@ -38,7 +77,7 @@ function Icon({ name, size = 20, strokeWidth = 2, className = "" }) {
 }
 
 /* =========================================================
-   REVEAL
+   SCROLL REVEAL COMPONENT
    ========================================================= */
 
 function Reveal({ children, className = "" }) {
@@ -46,7 +85,6 @@ function Reveal({ children, className = "" }) {
 
   useEffect(() => {
     const element = ref.current;
-
     if (!element) return;
 
     const observer = new IntersectionObserver(
@@ -56,13 +94,10 @@ function Reveal({ children, className = "" }) {
           observer.unobserve(element);
         }
       },
-      {
-        threshold: 0.12
-      }
+      { threshold: 0.1 }
     );
 
     observer.observe(element);
-
     return () => observer.disconnect();
   }, []);
 
@@ -79,6 +114,15 @@ function Reveal({ children, className = "" }) {
 
 function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 40);
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   const links = [
     { label: "Home", href: "#home" },
@@ -89,9 +133,8 @@ function Navbar() {
   ];
 
   return (
-    <header className="navbar">
+    <header className={`navbar ${scrolled ? "navbar-scrolled" : ""}`}>
       <div className="container nav-inner">
-
         <a href="#home" className="logo">
           <span className="logo-mark">A</span>
           <span>ArtoWebix</span>
@@ -107,7 +150,6 @@ function Navbar() {
               {link.label}
             </a>
           ))}
-
           <a
             href="#contact"
             className="nav-cta"
@@ -122,12 +164,8 @@ function Navbar() {
           aria-label="Toggle menu"
           onClick={() => setMenuOpen(!menuOpen)}
         >
-          <Icon
-            name={menuOpen ? "x" : "menu"}
-            size={24}
-          />
+          <Icon name={menuOpen ? "x" : "menu"} size={24} />
         </button>
-
       </div>
     </header>
   );
@@ -140,7 +178,6 @@ function Navbar() {
 function Hero() {
   return (
     <section className="hero-section" id="home">
-
       <div className="hero-background">
         <div className="hero-orb hero-orb-one"></div>
         <div className="hero-orb hero-orb-two"></div>
@@ -148,9 +185,7 @@ function Hero() {
       </div>
 
       <div className="container hero-container">
-
         <Reveal className="hero-content">
-
           <div className="hero-badge">
             <span className="badge-dot"></span>
             Websites built for local businesses
@@ -162,12 +197,11 @@ function Hero() {
           </h1>
 
           <p className="hero-description">
-            Premium, interactive websites designed to make local businesses
-            look professional, attract more customers and grow online.
+            Premium, interactive websites designed to make local businesses look
+            professional, attract more customers and grow online.
           </p>
 
           <div className="hero-buttons">
-
             <a href="#contact" className="btn btn-primary">
               Start Your Website
               <Icon name="arrow-up-right" size={18} />
@@ -177,7 +211,6 @@ function Hero() {
               Explore Services
               <Icon name="arrow-down" size={18} />
             </a>
-
           </div>
 
           <div className="hero-trust">
@@ -185,52 +218,36 @@ function Hero() {
               <Icon name="check-circle" size={18} />
               Mobile Friendly
             </div>
-
             <div className="trust-item">
               <Icon name="zap" size={18} />
               Fast & Modern
             </div>
-
             <div className="trust-item">
               <Icon name="sparkles" size={18} />
               Premium Design
             </div>
           </div>
-
         </Reveal>
 
         <Reveal className="hero-visual">
-
           <div className="hero-card">
-
             <div className="hero-card-top">
               <div className="browser-dots">
                 <span></span>
                 <span></span>
                 <span></span>
               </div>
-
-              <div className="browser-url">
-                artowebix.com
-              </div>
-
+              <div className="browser-url">artowebix.com</div>
               <Icon name="more-horizontal" size={18} />
             </div>
 
             <div className="hero-card-content">
-
-              <div className="hero-mini-label">
-                YOUR ONLINE PRESENCE
-              </div>
-
+              <div className="hero-mini-label">YOUR ONLINE PRESENCE</div>
               <h3>
                 Make your first
                 <span> impression count.</span>
               </h3>
-
-              <p>
-                A modern website that works for your business 24/7.
-              </p>
+              <p>A modern website that works for your business 24/7.</p>
 
               <div className="hero-mini-buttons">
                 <span></span>
@@ -253,14 +270,10 @@ function Hero() {
                   <small>Your business online</small>
                 </div>
               </div>
-
             </div>
           </div>
-
         </Reveal>
-
       </div>
-
     </section>
   );
 }
@@ -283,18 +296,14 @@ function Marquee() {
 
   return (
     <div className="marquee-section">
-
       <div className="marquee-track">
-
         {[...items, ...items].map((item, index) => (
           <div className="marquee-item" key={index}>
             <span>{item}</span>
-            <i></i>
+            <span className="marquee-dot">•</span>
           </div>
         ))}
-
       </div>
-
     </div>
   );
 }
@@ -304,7 +313,6 @@ function Marquee() {
    ========================================================= */
 
 function Services() {
-
   const [flipped, setFlipped] = useState(null);
 
   const servicesData = [
@@ -390,136 +398,79 @@ function Services() {
 
   return (
     <section className="section services-section" id="services">
-
       <div className="container">
-
         <Reveal className="section-heading">
-
-          <span className="section-label">
-            WHO WE BUILD FOR
-          </span>
-
+          <span className="section-label">WHO WE BUILD FOR</span>
           <h2>
             Your business.
             <span> Your style.</span>
-            Your website.
+            {" "}Your website.
           </h2>
-
-          <p>
-            Every business is different. Your website should be too.
-          </p>
-
+          <p>Every business is different. Your website should be too.</p>
         </Reveal>
 
         <div className="services-grid">
-
           {servicesData.map((service, index) => {
-
             const isFlipped = flipped === index;
 
             return (
               <Reveal
-                className={`service-card-wrapper ${
-                  isFlipped ? "flipped" : ""
-                }`}
+                className={`service-card-wrapper ${isFlipped ? "flipped" : ""}`}
                 key={service.title}
               >
-
                 <div
                   className="service-card"
-                  onClick={() =>
-                    setFlipped(isFlipped ? null : index)
-                  }
+                  onClick={() => setFlipped(isFlipped ? null : index)}
                 >
-
                   <div className="service-card-inner">
-
                     <div className="service-card-front">
-
                       <div className="service-card-top">
-
                         <div className="service-icon">
-                          <Icon name={service.icon} size={25} />
+                          <Icon name={service.icon} size={24} />
                         </div>
-
-                        <span className="service-number">
-                          {service.number}
-                        </span>
-
+                        <span className="service-number">{service.number}</span>
                       </div>
 
                       <div className="service-card-middle">
-
                         <h3>{service.title}</h3>
-
                         <p>{service.description}</p>
-
                       </div>
 
                       <div className="service-card-bottom">
-
-                        <span>
-                          Hover or tap to explore
-                        </span>
-
-                        <Icon
-                          name="arrow-right"
-                          size={18}
-                        />
-
+                        <span>Hover or tap to explore</span>
+                        <Icon name="arrow-right" size={18} />
                       </div>
-
                     </div>
 
                     <div className="service-card-back">
-
                       <div className="service-back-icon">
-                        <Icon name={service.icon} size={30} />
+                        <Icon name={service.icon} size={28} />
                       </div>
 
-                      <h3>
-                        {service.title}
-                      </h3>
-
-                      <p>
-                        Everything you need to build a strong
-                        online presence.
-                      </p>
+                      <h3>{service.title}</h3>
+                      <p>Everything you need to build a strong online presence.</p>
 
                       <ul>
                         {service.features.map((feature) => (
                           <li key={feature}>
-                            <Icon
-                              name="check"
-                              size={16}
-                            />
+                            <Icon name="check" size={16} />
                             {feature}
                           </li>
                         ))}
                       </ul>
 
-                      <a href="#contact">
+                      <a href="#contact" className="service-back-link">
                         Get Started
-                        <Icon
-                          name="arrow-up-right"
-                          size={17}
-                        />
+                        <Icon name="arrow-up-right" size={16} />
                       </a>
-
                     </div>
-
                   </div>
-
                 </div>
-
               </Reveal>
             );
           })}
-
         </div>
-
       </div>
-
     </section>
   );
 }
@@ -529,7 +480,6 @@ function Services() {
    ========================================================= */
 
 function Experience() {
-
   const [showMore, setShowMore] = useState(false);
 
   const features = [
@@ -595,75 +545,50 @@ function Experience() {
     }
   ];
 
-  const visibleFeatures = showMore
-    ? features
-    : features.slice(0, 6);
+  const visibleFeatures = showMore ? features : features.slice(0, 6);
 
   return (
     <section className="section experience-section" id="experience">
-
       <div className="container">
-
-        <Reveal className="section-heading">
-
-          <span className="section-label">
-            BUILT FOR RESULTS
-          </span>
-
+        <Reveal className="section-heading light-heading">
+          <span className="section-label">BUILT FOR RESULTS</span>
           <h2>
             More than a website.
             <span> An experience.</span>
           </h2>
-
           <p>
-            We combine clean design, smooth interactions and
-            smart features to create websites people remember.
+            We combine clean design, smooth interactions and smart features to
+            create websites people remember.
           </p>
-
         </Reveal>
 
         <div className="features-grid">
-
           {visibleFeatures.map((feature) => (
-            <Reveal
-              className="feature-card"
-              key={feature.title}
-            >
-
+            <Reveal className="feature-card" key={feature.title}>
               <div className="feature-icon">
                 <Icon name={feature.icon} size={22} />
               </div>
-
               <div>
                 <h3>{feature.title}</h3>
                 <p>{feature.text}</p>
               </div>
-
             </Reveal>
           ))}
-
         </div>
 
         <div className="experience-more">
-
           <button
             className="text-button"
             onClick={() => setShowMore(!showMore)}
           >
-            {showMore
-              ? "Show fewer features"
-              : "Explore more features (+6)"}
-
+            {showMore ? "Show fewer features" : "Explore more features (+6)"}
             <Icon
               name={showMore ? "chevron-up" : "chevron-down"}
               size={18}
             />
           </button>
-
         </div>
-
       </div>
-
     </section>
   );
 }
@@ -673,81 +598,55 @@ function Experience() {
    ========================================================= */
 
 function Process() {
-
   const steps = [
     {
       number: "01",
       icon: "message-square",
       title: "Tell us about your business",
-      text:
-        "We learn about your business, customers, goals and what makes you different."
+      text: "We learn about your business, customers, goals and what makes you different."
     },
     {
       number: "02",
       icon: "palette",
       title: "We design your experience",
-      text:
-        "We create a modern visual direction and website structure around your brand."
+      text: "We create a modern visual direction and website structure around your brand."
     },
     {
       number: "03",
       icon: "rocket",
       title: "Launch & grow",
-      text:
-        "Your website goes live and becomes a powerful part of your business."
+      text: "Your website goes live and becomes a powerful part of your business."
     }
   ];
 
   return (
     <section className="section process-section" id="process">
-
       <div className="container">
-
         <Reveal className="section-heading">
-
-          <span className="section-label">
-            HOW IT WORKS
-          </span>
-
+          <span className="section-label">HOW IT WORKS</span>
           <h2>
             Simple process.
             <span> Powerful result.</span>
           </h2>
-
           <p>
-            No complicated process. Just a clear path from idea
-            to a professional online presence.
+            No complicated process. Just a clear path from idea to a
+            professional online presence.
           </p>
-
         </Reveal>
 
         <div className="process-grid">
-
           {steps.map((step) => (
-            <Reveal
-              className="process-card"
-              key={step.number}
-            >
-
-              <div className="process-number">
-                {step.number}
-              </div>
-
+            <Reveal className="process-card" key={step.number}>
+              <div className="process-number">{step.number}</div>
               <div className="process-icon">
-                <Icon name={step.icon} size={25} />
+                <Icon name={step.icon} size={24} />
               </div>
-
               <h3>{step.title}</h3>
-
               <p>{step.text}</p>
-
             </Reveal>
           ))}
-
         </div>
-
       </div>
-
     </section>
   );
 }
@@ -759,32 +658,23 @@ function Process() {
 function ContactCTA() {
   return (
     <section className="contact-section" id="contact">
-
       <div className="container">
-
         <Reveal className="contact-card">
-
           <div className="contact-glow contact-glow-one"></div>
           <div className="contact-glow contact-glow-two"></div>
 
           <div className="contact-content">
-
-            <span className="section-label">
-              READY WHEN YOU ARE
-            </span>
-
+            <span className="section-label">READY WHEN YOU ARE</span>
             <h2>
               Let's build something
               <span> your customers remember.</span>
             </h2>
-
             <p>
-              Tell us about your business and let's create a website
-              that makes your brand stand out.
+              Tell us about your business and let's create a website that makes
+              your brand stand out.
             </p>
 
             <div className="contact-buttons">
-
               <a
                 href="https://wa.me/918169292390"
                 target="_blank"
@@ -802,15 +692,10 @@ function ContactCTA() {
                 <Icon name="mail" size={19} />
                 Send Email
               </a>
-
             </div>
-
           </div>
-
         </Reveal>
-
       </div>
-
     </section>
   );
 }
@@ -820,7 +705,6 @@ function ContactCTA() {
    ========================================================= */
 
 function FAQ() {
-
   const [openIndex, setOpenIndex] = useState(null);
   const [showAll, setShowAll] = useState(false);
 
@@ -877,97 +761,68 @@ function FAQ() {
     }
   ];
 
-  const visibleFaqs = showAll
-    ? faqs
-    : faqs.slice(0, 5);
+  const visibleFaqs = showAll ? faqs : faqs.slice(0, 5);
 
   return (
     <section className="section faq-section" id="faqs">
-
       <div className="container faq-container">
-
         <Reveal className="section-heading">
-
-          <span className="section-label">
-            QUESTIONS
-          </span>
-
+          <span className="section-label">QUESTIONS</span>
           <h2>
             Frequently asked
             <span> questions.</span>
           </h2>
-
         </Reveal>
 
         <Reveal className="faq-list">
-
-          {visibleFaqs.map((faq, index) => {
-
+          {visibleFaqs.map((faq) => {
             const actualIndex = faqs.indexOf(faq);
             const isOpen = openIndex === actualIndex;
 
             return (
               <div
-                className={`faq-item ${
-                  isOpen ? "active" : ""
-                }`}
+                className={`faq-item ${isOpen ? "active" : ""}`}
                 key={faq.question}
               >
-
                 <button
                   className="faq-question"
                   onClick={() =>
-                    setOpenIndex(
-                      isOpen ? null : actualIndex
-                    )
+                    setOpenIndex(isOpen ? null : actualIndex)
                   }
                   aria-expanded={isOpen}
                 >
-
                   <span>{faq.question}</span>
-
                   <span className="faq-icon">
-                    <Icon
-                      name={isOpen ? "minus" : "plus"}
-                      size={20}
-                    />
+                    <Icon name={isOpen ? "minus" : "plus"} size={18} />
                   </span>
-
                 </button>
 
                 <div
                   className="faq-answer"
                   style={{
-                    maxHeight: isOpen ? "300px" : "0px"
+                    maxHeight: isOpen ? "240px" : "0px"
                   }}
                 >
                   <p>{faq.answer}</p>
                 </div>
-
               </div>
             );
           })}
-
         </Reveal>
 
         <div className="faq-more">
-
           <button
             className="text-button"
             onClick={() => setShowAll(!showAll)}
           >
             {showAll ? "Show fewer questions" : "View all questions"}
-
             <Icon
               name={showAll ? "chevron-up" : "chevron-down"}
               size={18}
             />
           </button>
-
         </div>
-
       </div>
-
     </section>
   );
 }
@@ -979,120 +834,81 @@ function FAQ() {
 function Footer() {
   return (
     <footer className="footer">
-
       <div className="container">
-
         <div className="footer-main">
-
           <div className="footer-brand">
-
             <a href="#home" className="logo">
               <span className="logo-mark">A</span>
               <span>ArtoWebix</span>
             </a>
-
-            <p>
-              Premium websites for modern local businesses.
-            </p>
-
+            <p>Premium websites for modern local businesses.</p>
             <div className="footer-socials">
-
               <a
                 href="https://instagram.com/artowebix"
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="Instagram"
+                className="social-btn"
               >
-                <Icon name="instagram" size={19} />
+                <Icon name="instagram" size={18} />
               </a>
-
               <a
                 href="https://linkedin.com/company/artowebix"
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="LinkedIn"
+                className="social-btn"
               >
-                <Icon name="linkedin" size={19} />
+                <Icon name="linkedin" size={18} />
               </a>
-
               <a
                 href="https://wa.me/918169292390"
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="WhatsApp"
+                className="social-btn"
               >
-                <Icon name="message-circle" size={19} />
+                <Icon name="message-circle" size={18} />
               </a>
-
             </div>
-
           </div>
 
           <div className="footer-links">
-
             <div className="footer-column">
-
               <h4>Explore</h4>
-
               <a href="#home">Home</a>
               <a href="#services">Services</a>
               <a href="#experience">Experience</a>
               <a href="#process">Process</a>
               <a href="#faqs">FAQs</a>
-
             </div>
 
             <div className="footer-column">
-
               <h4>Services</h4>
-
               <a href="#services">Retail Stores</a>
               <a href="#services">Cafés & Restaurants</a>
               <a href="#services">Doctors & Clinics</a>
               <a href="#services">Salons & Studios</a>
               <a href="#services">Fitness Brands</a>
-
             </div>
 
             <div className="footer-column">
-
               <h4>Connect</h4>
-
-              <a href="tel:+918169292390">
-                +91 81692 92390
-              </a>
-
-              <a href="mailto:namaste@artowebix.com">
-                namaste@artowebix.com
-              </a>
-
-              <span>
-                Bandra Kurla Complex,
-                Mumbai, Maharashtra 400051
-              </span>
-
+              <a href="tel:+918169292390">+91 81692 92390</a>
+              <a href="mailto:namaste@artowebix.com">namaste@artowebix.com</a>
+              <span>Bandra Kurla Complex, Mumbai, Maharashtra 400051</span>
             </div>
-
           </div>
-
         </div>
 
         <div className="footer-bottom">
-
-          <p>
-            © {new Date().getFullYear()} ArtoWebix.
-            All rights reserved.
-          </p>
-
-          <a href="#home">
+          <p>© {new Date().getFullYear()} ArtoWebix. All rights reserved.</p>
+          <a href="#home" className="back-to-top">
             Back to top
             <Icon name="arrow-up" size={16} />
           </a>
-
         </div>
-
       </div>
-
     </footer>
   );
 }
@@ -1103,27 +919,19 @@ function Footer() {
 
 function App() {
   return (
-    <>
+    <div className="site">
       <Navbar />
-
       <main>
         <Hero />
-
         <Marquee />
-
         <Services />
-
         <Experience />
-
         <Process />
-
         <ContactCTA />
-
         <FAQ />
       </main>
-
       <Footer />
-    </>
+    </div>
   );
 }
 
@@ -1131,8 +939,5 @@ function App() {
    RENDER
    ========================================================= */
 
-const root = ReactDOM.createRoot(
-  document.getElementById("root")
-);
-
+const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(<App />);
