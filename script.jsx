@@ -644,11 +644,11 @@ function FAQ() {
     { q: "Will the website work on mobile?", a: "Yes. Every website is built mobile-first with smooth gestures and responsive layouts tailored for smartphones, tablets, and desktops." },
     { q: "Can I show my services and prices?", a: "Yes. We can create service cards, pricing sections, interactive menus, packages, galleries, and custom tabs depending on your business needs." },
     { q: "Can you add Google Maps and calling?", a: "Yes. Visitors can access your precise map location, one-tap turn-by-turn directions, and direct phone dialer links straight from the site." },
-    { q: "How long does it take to launch a full website?", a: "Most local business websites are designed, developed, and ready to go live within 5 to 10 working days, following your initial concept review within 48 hours." },
-    { q: "Do I have to pay any monthly recurring platform fees?", a: "No hidden monthly platform software subscriptions. You only pay for your standard annual domain name and fast cloud hosting, which we assist you in setting up cleanly." },
+    { q: "How long does it take to launch a full website?", a: "Most local business websites are designed, developed, and ready to go live within 3 to 5 working days, following your initial concept review within 48 hours." },
+    { q: "Do I have to pay any monthly recurring platform fees?", a: "No hidden monthly platform software subscriptions. You only pay for your standard annual domain name, which we assist you in setting up cleanly." },
     { q: "Can customers book appointments or reserve tables online?", a: "Yes! We configure direct appointment inquiry forms and WhatsApp reservation links with automated pre-filled details to eliminate booking friction." },
     { q: "Will my business show up on Google search results?", a: "Yes. We build all pages with clean semantic markup, fast load speeds, local business metadata, and on-page SEO best practices to help Google index and rank your business." },
-    { q: "Can I update my menu, prices, or photos later on?", a: "Yes. We organize websites with structured, easily editable sections and provide simple guidance so you can update pricing, offers, and gallery photos whenever needed." }
+    { q: "Will I fully own my website and domain name?", a: "Yes, 100%. You retain full ownership of your domain, website files, and content. If you already have a domain, we simply connect it; if you ever wish to move or transfer your setup in the future, we assist you throughout the process with zero lock-in." }
   ];
 
   const visibleFaqs = showAll ? faqItems : faqItems.slice(0, 5);
